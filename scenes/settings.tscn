@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://dx4dtlfj1acm8"]
+
+[ext_resource type="Script" uid="uid://dowpmv6umis2u" path="res://scripts/settings.gd" id="1_5p8wc"]
+
+[node name="Settings" type="Node2D"]
+script = ExtResource("1_5p8wc")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Main Menu" type="Button" parent="Control"]
+layout_mode = 0
+offset_right = 271.0
+offset_bottom = 99.0
+text = "Main Menu"
+
+[connection signal="pressed" from="Control/Main Menu" to="." method="_on_main_menu_pressed"]
