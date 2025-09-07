@@ -11,7 +11,7 @@ script = ExtResource("1_l6cm7")
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer"]
-anchors_preset = -1
+anchors_preset = 13
 anchor_left = 0.5
 anchor_right = 0.5
 anchor_bottom = 1.0
@@ -70,3 +70,4 @@ vertical_alignment = 1
 
 [connection signal="pressed" from="CanvasLayer/HBoxContainer/ButtonManager/Settings" to="." method="_on_scene_two_pressed"]
 [connection signal="pressed" from="CanvasLayer/HBoxContainer/ButtonManager/Exit" to="." method="_on_exit_pressed"]
+[connection signal="pressed" from="CanvasLayer/HBoxContainer/ButtonManager/Button" to="." method="_on_button_pressed"]
