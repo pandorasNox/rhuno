@@ -1,0 +1,56 @@
+#!/bin/bash
+set -e
+
+# Get staged .gd files
+STAGED_FILES=($(git diff --cached --name-only --diff-filter=ACMRT | grep '\.gd$' || true))
+
+if [ ${#STAGED_FILES[@]} -eq 0 ]; then
+    echo "No GDScript files to check"
+    exit 0
+fi
+
+echo "Checking ${#STAGED_FILES[@]} GDScript files with gdscript-toolkit..."
+
+# Ensure Docker image exists (using Makefile)
+make ensure-docker-image
+
+# Function to run gdtoolkit commands in Docker (using same setup as Makefile)
+run_gdtoolkit() {
+    docker run --rm -v "$(pwd):/workspace" -w /workspace gdscript-toolkit-local "$@"
+}
+
+# Check formatting first
+echo "Running gdformat --check..."
+if ! run_gdtoolkit gdformat --check "${STAGED_FILES[@]}"; then
+    echo "❌ Formatting issues detected. Auto-formatting files..."
+    
+    # Apply formatting
+    run_gdtoolkit gdformat "${STAGED_FILES[@]}"
+    
+    # Re-stage the formatted files
+    for file in "${STAGED_FILES[@]}"; do
+        git add "$file"
+        echo "✅ Formatted and re-staged: $file"
+    done
+    
+    echo "Files have been auto-formatted and re-staged."
+fi
+
+# Run linting
+echo "Running gdlint..."
+if ! run_gdtoolkit gdlint "${STAGED_FILES[@]}"; then
+    echo "❌ Linting errors found. Please fix the issues and try again."
+    echo "Tip: Check the output above for specific error messages."
+    exit 1
+fi
+
+# Run metrics check
+echo "Running gdradon (code complexity metrics)..."
+if ! run_gdtoolkit gdradon cc "${STAGED_FILES[@]}"; then
+    echo "❌ Code complexity metrics check failed."
+    echo "Tip: Consider refactoring complex functions to improve maintainability."
+    exit 1
+fi
+
+echo "✅ All GDScript checks passed!"
+exit 0

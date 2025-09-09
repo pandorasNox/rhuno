@@ -26,5 +26,7 @@ An uno inspired multiplayer card game.
 		* [ ] effect volume
 		* [ ] music volume
 	* [ ] ...
+* [ ] automation
+	* [ ] formatting/linting/parser/metrics via https://github.com/Scony/godot-gdscript-toolkit
 
 ### done
